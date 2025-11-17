@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditoría de Fricción Operacional (AFO) - Modelo SP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos personalizados para un look serio y profesional */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f9;
+        }
+        .result-card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+        .input-group label {
+            font-weight: 600;
+        }
+        .zone-red { background-color: #fca5a5; color: #991b1b; }
+        .zone-yellow { background-color: #fcd34d; color: #92400e; }
+        .zone-green { background-color: #a7f3d0; color: #065f46; }
+        .zone-dark-red { background-color: #ef4444; color: white; font-weight: bold; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-xl result-card">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-extrabold text-gray-800">Auditoría de Fricción Operacional (AFO)</h1>
+            <p class="text-xl text-gray-600 mt-2">Modelo de Prosperidad Sostenible (Tesis P.A. Aranda)</p>
+        </header>
+
+        <!-- Sección de Entrada de Datos (Input) -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6 border-b pb-6 mb-6">
+            <h2 class="md:col-span-2 text-2xl font-bold text-gray-700 mb-4 border-b pb-2">Entrada de Métricas Clave (Valores en Porcentaje de Facturación)</h2>
+
+            <!-- Fricción Operacional (C_H Equivalente) -->
+            <div class="input-group">
+                <label for="costo_burocracia" class="block text-sm text-gray-700">1. Burocracia/Procesos Lentos (ej. 5%):</label>
+                <input type="number" id="costo_burocracia" value="5" min="0" max="100" class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                <p class="text-xs text-gray-500 mt-1">Costo de errores, revisiones, reuniones internas ineficientes.</p>
+            </div>
+            <div class="input-group">
+                <label for="riesgo_legal" class="block text-sm text-gray-700">2. Riesgo Legal/Litigios (ej. 2%):</label>
+                <input type="number" id="riesgo_legal" value="2" min="0" max="100" class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                <p class="text-xs text-gray-500 mt-1">Costos de cumplimiento, multas, indemnizaciones legales.</p>
+            </div>
+            <div class="input-group">
+                <label for="perdida_valor" class="block text-sm text-gray-700">3. Pérdida de Valor/Merma (ej. 3%):</label>
+                <input type="number" id="perdida_valor" value="3" min="0" max="100" class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                <p class="text-xs text-gray-500">Robo interno, inventario obsoleto, fraude de proveedores.</p>
+            </div>
+            <div class="input-group">
+                <label for="ineficiencia_activos" class="block text-sm text-gray-700">4. Ineficiencia Activos/TI (ej. 5%):</label>
+                <input type="number" id="ineficiencia_activos" value="5" min="0" max="100" class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                <p class="text-xs text-gray-500">Sistemas lentos, mal mantenimiento de maquinaria, tecnología obsoleta.</p>
+            </div>
+
+            <!-- Parásito Visible (2G Equivalente) -->
+            <div class="input-group md:col-span-2">
+                <label for="costo_overhead" class="block text-sm text-gray-700 font-bold">5. Costo Overhead Improductivo (ej. 20%):</label>
+                <input type="number" id="costo_overhead" value="20" min="0" max="100" class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500">
+                <p class="text-xs text-gray-500">Gasto en personal y servicios que NO generan valor directo (el equivalente al Gasto Consumo/2G).</p>
+            </div>
+        </section>
+        
+        <!-- Botón de Cálculo -->
+        <button onclick="calcularAFO()" class="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 shadow-md">
+            Calcular Fricción Operacional Total ($\mathbf{FOT}$)
+        </button>
+
+        <!-- Sección de Resultados -->
+        <section class="mt-8">
+            <h2 class="text-2xl font-bold text-gray-700 mb-4 border-b pb-2">Veredicto Estructural del Modelo SP</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                <!-- Resultado 1: Fricción Operacional Total (TPL Equivalente) -->
+                <div class="result-card p-4 rounded-xl text-center bg-gray-100">
+                    <p class="text-sm text-gray-600 font-medium">Fricción Operacional Total (FOT)</p>
+                    <p id="resultado_fot" class="text-3xl font-extrabold mt-1 text-gray-800">0.00%</p>
+                    <p class="text-xs text-gray-500 mt-1">(Equivalente a Carga Parasitaria Total TPL)</p>
+                </div>
+
+                <!-- Resultado 2: Prosperidad Neta Operacional (P_NO) -->
+                <div id="card_pno" class="result-card p-4 rounded-xl text-center zone-green">
+                    <p class="text-sm font-medium">Prosperidad Neta Operacional ($\mathbf{P}_{\text{NO}}$)</p>
+                    <p id="resultado_pno" class="text-3xl font-extrabold mt-1">0.00%</p>
+                    <p class="text-xs font-medium opacity-80 mt-1">(Equivalente a Prosperidad Neta $\mathbf{P}_{\mathbf{N}}$)</p>
+                </div>
+
+            </div>
+
+            <!-- Diagnóstico de Fricción -->
+            <div class="mt-6 p-4 rounded-lg zone-green result-card">
+                <p class="font-bold text-lg mb-1" id="diagnostico_titulo">Veredicto:</p>
+                <p id="diagnostico_texto" class="text-sm">Inicie el cálculo para ver el diagnóstico estructural de su empresa.</p>
+            </div>
+            
+            <!-- Zona de Acción -->
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold text-gray-700">Mandato Operativo (Según $\mathbf{FOT}$):</h3>
+                <ul id="mandato_lista" class="list-disc list-inside text-gray-600 mt-2 ml-4">
+                    <li>Reduzca la FOT para liberar el Flujo de Caja Libre.</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function calcularAFO() {
+            // 1. Obtener valores de entrada como porcentaje (ej. 5)
+            const Burocracia = parseFloat(document.getElementById('costo_burocracia').value) || 0;
+            const RiesgoLegal = parseFloat(document.getElementById('riesgo_legal').value) || 0;
+            const PerdidaValor = parseFloat(document.getElementById('perdida_valor').value) || 0;
+            const IneficienciaActivos = parseFloat(document.getElementById('ineficiencia_activos').value) || 0;
+            const OverheadImproductivo = parseFloat(document.getElementById('costo_overhead').value) || 0;
+
+            // 2. Calcular Carga Oculta Operacional (C_HO) - Equivalente a C_H
+            // C_HO es la suma de los costos de fricción internos
+            const C_HO = Burocracia + RiesgoLegal + PerdidaValor + IneficienciaActivos;
+
+            // 3. Aplicar la Ley del Doble Costo (2G) al Overhead Improductivo (Equivalente a G_cons)
+            // Este es el costo más destructivo
+            const CostoDobleG = OverheadImproductivo * 2;
+
+            // 4. Calcular Fricción Operacional Total (FOT) - Equivalente a TPL
+            // FOT = C_HO + CostoDobleG
+            const FOT = C_HO + CostoDobleG;
+
+            // 5. Calcular Prosperidad Neta Operacional (P_NO) - Equivalente a P_N
+            // P_NO = 100% - FOT
+            const P_NO = 100 - FOT;
+
+            // 6. Mostrar resultados
+            document.getElementById('resultado_fot').textContent = FOT.toFixed(2) + '%';
+            document.getElementById('resultado_pno').textContent = P_NO.toFixed(2) + '%';
+
+            // 7. Diagnóstico y Colores (Zonas de Veredicto)
+            const cardPNO = document.getElementById('card_pno');
+            const diagnosticoTitulo = document.getElementById('diagnostico_titulo');
+            const diagnosticoTexto = document.getElementById('diagnostico_texto');
+            const mandatoLista = document.getElementById('mandato_lista');
+
+            // Resetear clases de color
+            cardPNO.className = 'result-card p-4 rounded-xl text-center';
+            diagnosticoTitulo.className = 'font-bold text-lg mb-1';
+
+            // Lógica de Zonas
+            if (P_NO < 0) {
+                // Zona ROJA OSCURO: Destrucción activa de capital (Quiebra Estructural)
+                cardPNO.classList.add('zone-dark-red');
+                diagnosticoTitulo.classList.add('zone-dark-red');
+                diagnosticoTitulo.textContent = '🚨 ¡ALERTA ROJA! - DESTRUCCIÓN ACTIVA';
+                diagnosticoTexto.textContent = 'Su FOT (Fricción Operacional Total) supera el 100%. Su empresa está consumiendo su capital neto anualmente. La irresponsabilidad operativa es insostenible.';
+                mandatoLista.innerHTML = `
+                    <li>**Mandato de Implosión:** Reducción inmediata y drástica del Overhead Improductivo (2G).</li>
+                    <li>**Auditoría Forense:** Eliminar las fuentes de Burocracia y Pérdida de Valor (C_HO).</li>
+                `;
+            } else if (P_NO >= 0 && P_NO < 10) {
+                // Zona NARANJA: Estancamiento Crítico
+                cardPNO.classList.add('zone-yellow');
+                diagnosticoTitulo.classList.add('zone-yellow');
+                diagnosticoTitulo.textContent = '⚠️ ZONA NARANJA - ESTANCAMIENTO CRÍTICO';
+                diagnosticoTexto.textContent = 'Su P_NO es marginal. La empresa está al borde de la quiebra. La alta fricción está drenando casi toda la riqueza potencial.';
+                mandatoLista.innerHTML = `
+                    <li>**Urgencia:** Iniciar la "Doble Sierra": Reducir 2G y C_HO simultáneamente.</li>
+                    <li>**Enfoque:** La FOT debe caer al menos 10 puntos para asegurar la solvencia.</li>
+                `;
+            } else if (P_NO >= 10 && P_NO < 30) {
+                // Zona AMARILLA: Solvencia Ineficiente
+                cardPNO.classList.add('zone-yellow');
+                diagnosticoTitulo.classList.add('zone-yellow');
+                diagnosticoTitulo.textContent = '🟡 ZONA AMARILLA - SOLVENCIA INEFICIENTE';
+                diagnosticoTexto.textContent = 'La empresa es solvente, pero su FOT es demasiado alta. Está dejando pasar una gran oportunidad de acumulación de capital.';
+                mandatoLista.innerHTML = `
+                    <li>**Prioridad:** Optimizar la Burocracia y la Ineficiencia de Activos (C_HO).</li>
+                    <li>**Potencial:** Una reducción del 5% en FOT podría duplicar su P_NO.</li>
+                `;
+            } else {
+                // Zona VERDE: Responsabilidad Operacional (Élite)
+                cardPNO.classList.add('zone-green');
+                diagnosticoTitulo.classList.add('zone-green');
+                diagnosticoTitulo.textContent = '✅ ZONA VERDE - LIDERAZGO EN EFICIENCIA';
+                diagnosticoTexto.textContent = 'Su Prosperidad Neta Operacional es robusta. La gestión del Parásito es ejemplar. Su empresa está maximizando la acumulación de capital.';
+                mandatoLista.innerHTML = `
+                    <li>**Vigilancia:** Mantener el control de 2G y buscar el 1% de optimización.</li>
+                    <li>**Inversión:** Canalizar el FCL (P_NO) a inversión productiva y expansión.</li>
+                `;
+            }
+        }
+
+        // Ejecutar el cálculo inicial al cargar la página
+        window.onload = calcularAFO;
+    </script>
+</body>
+</html>
